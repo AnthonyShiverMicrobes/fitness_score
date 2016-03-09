@@ -1,0 +1,11 @@
+function scoremat = build_scoremat(score,size)
+scoremat.data=score.data;
+scoremat.cnd=size.cnd;
+scoremat.cnc=size.cnc;
+scoremat.plt=size.plt;
+scoremat.wll=size.wll;
+scoremat.acc=size.acc;
+scoremat.uid=size.uid;
+scoremat.mut=size.mut;
+scoremat.mrk=size.mrk;
+scoremat.bch=size.bch;

@@ -27,8 +27,8 @@ datamatF=remove_bad_strains(datamatF,bad);
 datamatS=squeeze_outliers(datamatS,datameta);
 datamatS=eliminate_disagreement(datamatS,datameta,uniq_field);
 %-- power transform data
-datamatP=transform_data(datamatS,0.5);
-%datamatP=datamatS;
+%datamatP=transform_data(datamatS,0.5);
+datamatP=datamatS;
 %-- normalize size
 if(strcmpi('keio6',type))
     [datamatN,datameta]=normalize_data_split(datamatP,datameta,average_method,ignore,'mut',keio6ind);
@@ -37,10 +37,11 @@ else
 end
 %-- scale variance of data
 %datamatV=scale_data(datamatN,'mad');
-datamatV=kritikos_scale(datamatN,datameta,average_method,variance_method);
-%datamatV=datamatN;
+%datamatV=kritikos_scale(datamatN,datameta,average_method,variance_method);
+datamatV=datamatN;
 %-- enforce at least three measurements
 datamatV=enforce_triplicates(datamatV);
+score=[];scoremat=[];meta=[];
 %-- adapt for toolbox
 %datamatVscaled=fit_to_fivehundred(datamatV,datameta,average_method,numDup);
 %datamatFscaled=fit_to_fivehundred(datamatF,datameta,average_method,numDup);

@@ -1,33 +1,50 @@
 function [score,meta,scoremat,datameta,datamatV,datamatN,datamatS,...
-          datamatF,datamat,model]...
+          datamatF,datamat,spatialmodel]...
           =scoreRNAP(cond_file,array_file,data_path,format,ignore,bad)
+%-------------------------------------------------------------------!
 %[xxx]=scoreRNAP('condition file','array file','data path','format','ignore','bad')
 %ALS 2013.
+%-------------------------------------------------------------------!
+%define variables
+frac=0.25; %fraction of colony sizes that can be zero without before filtering colony
+variance_limit=1000; %limit of colony size variance before filtering S-score
+spatial_model_type='quartic'; %type of spatial model to use
+average_method='middlemean'; %how to estimate average
+variance_method='mad'; %how to estimate variance
+numDup=1; %no collapsing
 %read data, populate datastructures
 [datamat,datameta]=read_data(data_path,...
                             read_array_key(array_file),...
                             read_condition_key(cond_file),...
                             format);
-model=generate_model(datameta.col,datameta.row,'quartic');
-%filter and transform
-datamatF=filter_data(datamat,datameta,'rnap');
-%datamatP=transform_data(datamatF,0.5);
-datamatP=datamatF;
-%remove bad strains
-datamatP=remove_bad_strains(datamatP,bad);
-%smooth data
-[datamatS,datameta]=smooth_data(model,datamatP,datameta);
-%remove low replicates
-datamatS=enforce_triplicates(datamatS);
-%normalize size and variance
-[datamatN,datameta]=normalize_data(datamatS,datameta,'middlemean',ignore,'mut');
-datamatN=normalize_strain(datamatN,datameta,'RNAP_marker','middlemean',ignore,'mut');
-%datamatV=scale_data(datamatN,'mad');
-datamatV=datamatN;
-%adapt for toolbox
-datamatVscaled=fit_to_fivehundred(datamatV,datameta,'middlemean');datamatPscaled=fit_to_fivehundred(datamatP,datameta,'middlemean');
-datameta=controlstats(datamatPscaled,datameta,'F'); datameta=controlstats(datamatVscaled,datameta,'V');
+spatialmodel=generate_model(datameta.col,datameta.row,spatial_model_type);
+%-- filter
+[datamatF,datameta]=filter_data(datamat,datameta,'rnap',frac);
+%-- remove bad data
+datamatF=remove_bad_strains(datamatF,bad);
+%-- smooth data
+[datamatS,datameta]=smooth_data(spatialmodel,datamatF,datameta);
+%-- squeeze outliers and eliminate disagreements
+datamatS=squeeze_outliers(datamatS,datameta);
+%-- power transform data
+datamatP=transform_data(datamatS,0.5);
+%datamatP=datamatS;
+%-- normalize size
+[datamatN,datameta]=normalize_data(datamatP,datameta,average_method,ignore,'mut');
+datamatN=normalize_strain(datamatN,datameta,'mixed_structure',average_method,ignore,'mut');
+%-- scale variance of data
+datamatV=RC4_scale(datamatN,datameta,average_method,variance_method);
+%datamatV=scale_data(datamatN,'variance_method');
+%datamatV=datamatN;
+%-- remove low replicates
+datamatV=enforce_triplicates(datamatV);
+%-- adapt for toolbox
+datamatVscaled=fit_to_fivehundred(datamatV,datameta,average_method,numDup);
+datamatFscaled=fit_to_fivehundred(datamatF,datameta,average_method,numDup);
+datameta=controlstats(datamatFscaled,datameta,'F'); 
+datameta=controlstats(datamatVscaled,datameta,'V');
 %score the data
-scoremat=calculate_score(datamatPscaled,datamatVscaled,datameta);
+scoremat=calculate_score(datamatFscaled,datamatVscaled,datameta,variance_limit,numDup);
 %average degenerate sites
 [score,meta]=average_ID(scoremat,datameta,'uid');
+

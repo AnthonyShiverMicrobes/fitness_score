@@ -35,7 +35,7 @@ else
     [datamatN,datameta]=normalize_data(datamatP,datameta,average_method,ignore,'mut');
 end
 %-- scale variance of data
-datamatV=kritikos_scale(datamatN,datameta,average_method,variance_method);
+datamatV=RC4_scale(datamatN,datameta,average_method,variance_method);
 %datamatV=scale_data(datamatN,'mad');
 %datamatV=datamatN;
 %-- collapse replicates for one score

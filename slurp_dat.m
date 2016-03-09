@@ -12,6 +12,7 @@ function data=slurp_dat(filepath,format)
 % iris_v0_ecogrowth:  row|col|sze       :
 % iris_v0_ecoopacity:row|col|sze|crc|opc:
 % iris_kritikos: row|col|opc            :
+% krit_dat: opc | crc                   :
 %---------------------------------------!
 % Anthony Shiver (2013)                 :
 %---------------------------------------!
@@ -32,6 +33,9 @@ switch format
     case 'iris_kritikos'
         cell=textscan(fid,'%*u%*u%f','HeaderLines',7,'TreatAsEmpty','NA');
         [data.opc]=cell{:};
+    case 'krit_dat'
+        cell=textscan(fid,'%*u%*u%f%f','HeaderLines',1);
+        [data.opc,data.crc]=cell{:};
     otherwise
         disp([filepath ': Proper format not specified!']);
 end
