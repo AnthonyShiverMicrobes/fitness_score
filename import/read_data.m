@@ -64,7 +64,7 @@ function [x1,datameta]=condition_update(condition,concentration,batch,datameta)
 uni_cnd=strcat(datameta.cnd,datameta.cnc);
 cndcnc=strcat(condition,concentration);
 %-- eliminate those sneaky hidden space issue
-if(~isempty(uni_cnd{1}))
+if(~isempty(uni_cnd))
     uni_cnd=regexprep(uni_cnd,'\s+','');
 end
 cndcnc=regexprep(cndcnc,'\s+','');
