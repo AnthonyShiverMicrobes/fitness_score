@@ -1,17 +1,10 @@
 function [score,meta,scoremat,datameta,datamatV,datamatN,datamatS,...
           datamatF,datamat,spatialmodel,settings]...
-          =scoreRNAP(cond_file,array_file,data_path,file_format,ignore,bad)
+          =scoreRNAP(settings.cond_file,settings.array_file,settings.data_path,settings.fileformat,settings.ignore,settings.bad)
 %-------------------------------------------------------------------!
 %[xxx]=scoreRNAP('condition file','array file','data path','format','ignore','bad')
 %ALS 2013.
 %-------------------------------------------------------------------!
-%store passed variables
-settings.cond_file=cond_file;
-settings.array_file=array_file;
-settings.data_path=data_path;
-settings.file_format=file_format;
-settings.ignore=ignore;
-settings.bad=bad;
 %define variables
 settings.frac=0.25; %fraction of colony sizes that can be zero without before filtering colony
 settings.variance_limit=1000; %limit of colony size variance before filtering S-score
@@ -25,9 +18,9 @@ settings.normalize_field='mut';
 settings.plate_average_field='uid';
 %read data, populate datastructures
 [datamat,datameta]=read_data(settings.data_path,...
-                            read_array_key(settings.array_file),...
-                            read_condition_key(settings.cond_file),...
-                            settings.file_format);
+                            settings.read_array_key(array_file),...
+                            settings.read_condition_key(cond_file),...
+                            settings.fileformat);
 spatialmodel=generate_model(datameta.col,datameta.row,settings.spatial_model_type);
 %-- filter
 [datamatF,datameta]=filter_data(datamat,datameta,settings.platetype,settings.frac);

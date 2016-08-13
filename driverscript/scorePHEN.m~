@@ -20,7 +20,6 @@ settings.average_method='middlemean'; %how to estimate average
 settings.variance_method='mad'; %how to estimate variance
 settings.numDup=2; %in the end, replicates will be collapsed
 settings.eliminate_disagreement_field='acc';
-settings.normalize_field='mut';
 %--read data, populate datastructures
 [datamat,datameta]=read_data(settings.data_path,...
                             read_array_key(settings.array_file),...
@@ -40,13 +39,13 @@ datamatS=eliminate_disagreement(datamatS,datameta,settings.eliminate_disagreemen
 datamatP=transform_data(datamatS,0.5);
 %datamatP=datamatS;
 %-- normalize size
-if(strcmpi('keio6',settings.plate_type))
-    [datamatN,datameta]=normalize_data_split(datamatP,datameta,settings.average_method,settings.ignore,settings.normalize_field,settings.keio6ind);
+if(strcmpi('keio6',plate_type))
+    [datamatN,datameta]=normalize_data_split(datamatP,datameta,average_method,ignore,'mut',keio6ind);
 else
-    [datamatN,datameta]=normalize_data(datamatP,datameta,settings.average_method,settings.ignore,settings.normalize_field);
+    [datamatN,datameta]=normalize_data(datamatP,datameta,average_method,ignore,'mut');
 end
 %-- scale variance of data
-datamatV=RC4_scale(datamatN,datameta,settings.average_method,settings.variance_method);
+datamatV=RC4_scale(datamatN,datameta,average_method,variance_method);
 %datamatV=scale_data(datamatN,'mad');
 %datamatV=datamatN;
 %-- collapse replicates for one score
@@ -56,9 +55,9 @@ datamatV=RC4_scale(datamatN,datameta,settings.average_method,settings.variance_m
 datamatVC=enforce_triplicates(datamatVC);
 datamatFC=enforce_triplicates(datamatFC);
 %-- adapt for toolbox
-datamatVscaled=fit_to_fivehundred(datamatVC,datametaC,settings.average_method,settings.numDup); %final data
-datamatFscaled=fit_to_fivehundred(datamatFC,datametaC,settings.average_method,settings.numDup); %original data
+datamatVscaled=fit_to_fivehundred(datamatVC,datametaC,average_method,numDup); %final data
+datamatFscaled=fit_to_fivehundred(datamatFC,datametaC,average_method,numDup); %original data
 datametaC=controlstats(datamatFscaled,datametaC,'F'); 
 datametaC=controlstats(datamatVscaled,datametaC,'V');
 %-- score the data
-scoremat=calculate_score(datamatFscaled,datamatVscaled,datametaC,settings.variance_limit,settings.numDup);
+scoremat=calculate_score(datamatFscaled,datamatVscaled,datametaC,variance_limit,numDup);
