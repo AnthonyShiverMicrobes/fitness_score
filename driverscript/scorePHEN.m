@@ -26,7 +26,7 @@ settings.normalize_field='mut';
                             read_array_key(settings.array_file),...
                             read_condition_key(settings.cond_file),...
                             settings.file_format);
-spatialmodel=generate_model(datameta.col,datameta.row,settings.spatial_model_type);
+settings.spatialmodel=generate_model(datameta.col,datameta.row,settings.spatial_model_type);
 %-- filter
 [datamatF,datameta]=filter_data(datamat,datameta,settings.plate_type,settings.frac);
 %-- remove bad data

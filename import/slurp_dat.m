@@ -11,6 +11,7 @@ function data=slurp_dat(filepath,format)
 % collins_v2:  row|col|sze|crc|int      :
 % iris_v0_ecogrowth:  row|col|sze       :
 % iris_v0_ecoopacity:row|col|sze|crc|opc:
+% iris_v0_ecobiofilm:row|col|sze|crc|int|bsze|bint|rsze|nint|opc:
 % iris_kritikos: row|col|opc            :
 % krit_dat: opc | crc                   :
 %---------------------------------------!
@@ -36,6 +37,9 @@ switch format
     case 'krit_dat'
         cell=textscan(fid,'%*u%*u%f%f','HeaderLines',1);
         [data.opc,data.crc]=cell{:};
+    case 'iris_v0_ecobiofilm'
+        cell=textscan(fid,'%*u%*u%f%f%f%f%f%f%f%f','HeaderLines',7);
+        [data.sze,data.crc,data.int,data.bsze,data.bint,data.rsze,data.nint,data.opc]=cell{:};
     otherwise
         disp([filepath ': Proper format not specified!']);
 end

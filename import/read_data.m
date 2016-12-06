@@ -106,6 +106,15 @@ switch format
     case 'krit_dat'
         datamat.opc=ones(size)*NaN;
         datamat.crc=ones(size)*NaN;
+    case 'iris_v0_ecobiofilm'
+        datamat.sze=ones(size)*NaN;
+        datamat.crc=ones(size)*NaN;
+        datamat.int=ones(size)*NaN;
+        datamat.bsze=ones(size)*NaN;
+        datamat.bint=ones(size)*NaN;
+        datamat.rsze=ones(size)*NaN;
+        datamat.nint=ones(size)*NaN;
+        datamat.opc=ones(size)*NaN;
     otherwise
         disp('Proper format not specified!');
         datamat=[];

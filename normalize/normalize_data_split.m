@@ -54,6 +54,11 @@ for a=1:indsize(2)
                     otherwise %median assumed
                         datameta.([fields{m},'_nrm'])(i,a,k)=nanmedian(norm.(fields{m})(i,ind(:,a),k),2);
                 end
+                %prevent the formation of inf values by dividing through by
+                %zero
+                if datameta.([fields{m},'_nrm'])(i,a,k)==0
+                    datameta.([fields{m},'_nrm'])(i,a,k)=NaN;
+                end
             %build normalization factor for subpopulation
             norm_vector=ones(size(datamat.(fields{m})(i,:,k)));
             norm_vector(ind(:,a))=target.(fields{m})/datameta.([fields{m},'_nrm'])(i,a,k);

@@ -87,7 +87,6 @@ switch norm_method
         av=nanmean(vector(range));
 end
 end    
-
 function datamatN=normalize_driver(norm,datamat,datameta,norm_method,controls,markers,control_field,marker_field)
             fields=fieldnames(norm);
             for m=1:length(fields)

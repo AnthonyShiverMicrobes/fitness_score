@@ -71,14 +71,19 @@ for a=1:length(fields)
             scale.(fields{a})=nan75percentile(set.(fields{a})(:))-...
                               nan25percentile(set.(fields{a})(:));
     end
-    set.(fields{a})=set.(fields{a})./scale.(fields{a});
+    %prevent creation of Inf values if majority zero
+    if scale.(fields{a})~=0
+        set.(fields{a})=set.(fields{a})./scale.(fields{a});
+    else
+        set.(fields{a})=set.(fields{a}).*NaN;
+    end
+    %reconstruct
+    vscaled(rc1i)=set.r1;
+    vscaled(rc2i)=set.r2;
+    vscaled(rc3i)=set.r3;
+    vscaled(rc4i)=set.r4;
+    vscaled(inneri)=set.in;
 end
-%reconstruct
-vscaled(rc1i)=set.r1;
-vscaled(rc2i)=set.r2;
-vscaled(rc3i)=set.r3;
-vscaled(rc4i)=set.r4;
-vscaled(inneri)=set.in;
 end
 function vscaled=scaleplate(v,methodcenter,methodscale)
 %

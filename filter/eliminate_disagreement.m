@@ -4,7 +4,7 @@ function datamat=eliminate_disagreement(datamat,datameta,ID)
 % ------------------------------------------------                        :
 % eliminate_disagreement.mat finds replicates where one strain has a zero :
 % value and the second is normal, and NaNs both values to eliminate       :
-% spurious zeros.Assumes to unique element (specific for KEIO layout      :
+% spurious zeros.Assumes two unique element (specific for KEIO layout     :
 %-------------------------------------------------------------------------!
 % Anthony Shiver 08-08-15                                                 :
 %-------------------------------------------------------------------------!
