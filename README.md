@@ -12,7 +12,6 @@
 
 *TO DO:
 Write detailed summary of set up and execution
-saving of global variables in a structure
 
 ### How do I get set up? ###
 
