@@ -19,10 +19,12 @@ settings.spatial_model_type='quartic'; %type of spatial model to use
 settings.average_method='middlemean'; %how to estimate average
 settings.variance_method='mad'; %how to estimate variance
 settings.numDup=1; %no collapsing
-settings.normalization_rnap='mixed_structure';
+settings.normalization_rnap='RNAP_marker';
 settings.platetype='rnap';
 settings.normalize_field='mut';
 settings.plate_average_field='uid';
+settings.power_transform=false;
+settings.variance_scale='RC4';
 %read data, populate datastructures
 [datamat,datameta]=read_data(settings.data_path,...
                             read_array_key(settings.array_file),...
@@ -35,18 +37,30 @@ spatialmodel=generate_model(datameta.col,datameta.row,settings.spatial_model_typ
 datamatF=remove_bad_strains(datamatF,settings.bad);
 %-- smooth data
 [datamatS,datameta]=smooth_data(spatialmodel,datamatF,datameta);
-%-- squeeze outliers and eliminate disagreements
+%-- squeeze outliers
 datamatS=squeeze_outliers(datamatS,datameta);
+datamatS=nomorezeros(datamatS);
 %-- power transform data
-datamatP=transform_data(datamatS,0.5);
-%datamatP=datamatS;
+if(settings.power_transform==true)
+    datamatP=transform_data(datamatS,0.5);
+else
+    datamatP=datamatS;
+end
 %-- normalize size
 [datamatN,datameta]=normalize_data(datamatP,datameta,settings.average_method,settings.ignore,settings.normalize_field);
 datamatN=normalize_strain(datamatN,datameta,settings.normalization_rnap,settings.average_method,settings.ignore,settings.normalize_field);
+datamatN=squeeze_outliers(datamatN,datameta);
 %-- scale variance of data
-datamatV=RC4_scale(datamatN,datameta,settings.average_method,settings.variance_method);
-%datamatV=scale_data(datamatN,'variance_method');
-%datamatV=datamatN;
+switch settings.variance_scale
+    case 'RC4'
+        datamatV=RC4_scale(datamatN,datameta,settings.average_method,settings.variance_method);
+    case 'old'
+        datamatV=scale_data(datamatN,'mad');
+    case 'none'
+        datamatV=datamatN;
+    otherwise
+        datamatV=datamatN;
+end
 %-- remove low replicates
 datamatV=enforce_triplicates(datamatV);
 %-- adapt for toolbox

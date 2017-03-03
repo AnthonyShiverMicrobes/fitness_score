@@ -5,6 +5,7 @@ function [controls,markers,control_field,marker_field]=populate_search(method)
     switch method
         case 'RNAP_marker'
             controls.rpoBC={'rpoBC{cat}'};
+            controls.dksA={'rpoBC{cat};dksA'};
             controls.rpoD ={'rpoD{cat}'};
             controls.fis  ={'fis{aph}'};
             controls.nusAaph ={'nusA{aph}'};
@@ -16,7 +17,8 @@ function [controls,markers,control_field,marker_field]=populate_search(method)
             controls.nusE ={'nusE{cat}'};
             controls.rpoC ={'rpoC{cat}'};
                       
-            markers.rpoBC={'ALS2*3','ALS2*3; aph(KEIO:dksA)'};
+            markers.rpoBC ={'ALS2*3'};
+            markers.dksA ={'ALS2*3; aph(KEIO:dksA)'};
             markers.rpoD ={'ALS4*5','ALS13*14','ALS49*50','aph(AH:rpoD)'};
             markers.fis  ={'ALS90*91','ALS92*93'};
             markers.nusAaph ={'aph(JP:nusA)'};

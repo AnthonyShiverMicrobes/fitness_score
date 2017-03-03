@@ -1,5 +1,5 @@
 function [scoremat,datametaC,datamatVC,datameta,datamatV,datamatN,datamatS,...
-          datamatF,datamat,spatialmodel,settings]...
+          datamatF,datamat,settings]...
           =scorePHEN(cond_file,array_file,data_path,file_format,ignore,bad,plate_type,keio6ind)
 %[xxx]=read_in_stats('condition file','array file','data path','format','ignore','bad','type')
 %--ALS 2015.
@@ -21,6 +21,8 @@ settings.variance_method='mad'; %how to estimate variance
 settings.numDup=2; %in the end, replicates will be collapsed
 settings.eliminate_disagreement_field='acc';
 settings.normalize_field='mut';
+settings.power_transform=true;
+settings.variance_scale='RC4';
 %--read data, populate datastructures
 [datamat,datameta]=read_data(settings.data_path,...
                             read_array_key(settings.array_file),...
@@ -36,9 +38,13 @@ datamatF=remove_bad_strains(datamatF,settings.bad);
 %-- squeeze outliers and eliminate disagreements
 datamatS=squeeze_outliers(datamatS,datameta);
 datamatS=eliminate_disagreement(datamatS,datameta,settings.eliminate_disagreement_field);
+datamatS=nomorezeros(datamatS);
 %-- power transform data
-datamatP=transform_data(datamatS,0.5);
-%datamatP=datamatS;
+if(settings.power_transform)
+    datamatP=transform_data(datamatS,0.5);
+else
+    datamatP=datamatS;
+end
 %-- normalize size
 if(strcmpi('keio6',settings.plate_type))
     [datamatN,datameta]=normalize_data_split(datamatP,datameta,settings.average_method,settings.ignore,settings.normalize_field,settings.keio6ind);
@@ -46,9 +52,16 @@ else
     [datamatN,datameta]=normalize_data(datamatP,datameta,settings.average_method,settings.ignore,settings.normalize_field);
 end
 %-- scale variance of data
-datamatV=RC4_scale(datamatN,datameta,settings.average_method,settings.variance_method);
-%datamatV=scale_data(datamatN,'mad');
-%datamatV=datamatN;
+switch settings.variance_scale
+    case 'RC4'
+        datamatV=RC4_scale(datamatN,datameta,settings.average_method,settings.variance_method);
+    case 'old'
+        datamatV=scale_data(datamatN,'mad');
+    case 'none'
+        datamatV=datamatN;
+    otherwise
+        datamatV=datamatN;
+end
 %-- collapse replicates for one score
 [datamatVC,datametaC]=collapse_structure(datamatV,datameta);
 [datamatFC,~]=collapse_structure(datamatF,datameta);

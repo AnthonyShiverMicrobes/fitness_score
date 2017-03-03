@@ -23,6 +23,13 @@ end
 for m=1:length(fields)
     datameta.([fields{m},'_men_',matformat])=nanmean(datamat.(fields{m}),3);
     datameta.([fields{m},'_std_',matformat])=nanstd(datamat.(fields{m}),0,3);
-    datameta.([fields{m},'_cmd_',matformat])=nanmedian(datameta.([fields{m},'_men_',matformat]));
-    datameta.([fields{m},'_csd_',matformat])=nanmedian(datameta.([fields{m},'_std_',matformat]));
+    datameta.([fields{m},'_cmd_',matformat])=middlemean(datameta.([fields{m},'_men_',matformat]));
+    datameta.([fields{m},'_csd_',matformat])=middlemean(datameta.([fields{m},'_std_',matformat]));
+end
+end
+function average=middlemean(vector)
+    upqr=nan75percentile(vector);
+    lwqr=nan25percentile(vector);
+    range=vector<upqr & vector>lwqr;
+    average=nanmean(range);
 end

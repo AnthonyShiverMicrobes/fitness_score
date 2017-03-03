@@ -3,7 +3,7 @@ function datamat=squeeze_outliers(datamat,datameta)
 % function datamat=squeeze_outliers(datamat,datameta)                     :
 % ---------------------------------------------------                     :
 % squeeze_outliers.mat searches for outliers that are > 3 times the size  :
-% of their strain median (taken from cmd)                and sets their   :
+% of their strain median (taken from cmd) and sets their                  :
 % value to 3. This strategy was taken from the Collins workflow, but sets :
 % the average relative to strain size, not plate average                  :
 %-------------------------------------------------------------------------!

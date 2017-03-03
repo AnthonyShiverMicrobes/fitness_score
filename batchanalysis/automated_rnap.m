@@ -1,10 +1,10 @@
-parent='/Users/ashiver/Desktop/data/';
+parent='/Users/ashiver/Documents/Papers/CAG/RNAP_paper/RNAP_data/';
 data={'0.9.4_iris_r1','0.9.4_iris_r1','0.9.4_iris_r1','0.9.4_iris_r1','0.9.4_iris_r2','0.9.4_iris_r2','0.9.4_iris_r2','0.9.4_iris_r2'};
 condition={'r1b1.csv','r1b2.csv','r1b3.csv','r1b4.csv','r2b1.csv','r2b2.csv','r2b3.csv','r2b4.csv'};
 array={'R1_key.csv','R1_key.csv','R1_key.csv','R1_key.csv','R2_key.csv','R2_key.csv','R2_key.csv','R2_key.csv'};
 structurekey={'a1','a2','a3','a4','b1','b2','b3','b4'};    
 for rnap = 1 : 4
-    key=structurekey{rnap};
+    key=structurekey{rnap}
 [score.(key),meta.(key),scoremat.(key),datameta.(key),datamatV.(key),...
         datamatN.(key),datamatS.(key),datamatF.(key),datamat.(key),...
         model.(key),settings.(key)]=scoreRNAP([parent,condition{rnap}],...
@@ -13,7 +13,7 @@ for rnap = 1 : 4
                                 'iris_v0_ecoopacity',r1i,r1b);
 end
 for rnap = 5 : 8
-    key=structurekey{rnap};
+    key=structurekey{rnap}
 [score.(key),meta.(key),scoremat.(key),datameta.(key),datamatV.(key),...
         datamatN.(key),datamatS.(key),datamatF.(key),datamat.(key),...
         model.(key),settings.(key)]=scoreRNAP([parent,condition{rnap}],...
